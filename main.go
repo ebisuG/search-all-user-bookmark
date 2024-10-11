@@ -26,7 +26,8 @@ func initialModel() model {
 	searchPathString.WriteString("C:\\Users\\")
 	searchPathString.WriteString(username)
 	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
-	fmt.Println("searchPathString : ", searchPathString)
+	fmt.Println("Press Ctrl + c when you quit")
+	fmt.Println("searchPathString : ", searchPathString.String())
 
 	return model{
 		searchPath:   []string{searchPathString.String()},
@@ -59,7 +60,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// The "enter" key and the spacebar (a literal space) toggle
 			// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
-			fmt.Println("enter is pushed")
+			// fmt.Println("enter is pushed")
+			// fmt.Println("searchString : ", m.searchString.View()[2:], "\nnewline")
+			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
+			checkError(err)
+			fmt.Println(string(data))
+			fmt.Println("")
 		}
 	}
 
@@ -80,6 +86,12 @@ func (m model) View() string {
 	// Send the UI for rendering
 	return fmt.Sprintf("%s\n", m.searchString.View())
 	// return s
+}
+
+func checkError(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
 func main() {
