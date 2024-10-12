@@ -52,7 +52,10 @@ type Meta_info struct {
 	PowerBookmarkMeta string `json:"power_bookmark_meta"`
 }
 
-
+type InfoDisplayed struct {
+	name string
+	url  string
+}
 
 func initialModel() model {
 	ti := textinput.New()
@@ -110,7 +113,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// fmt.Println(bookmarks.Roots.BookmarkBar.Children)
 			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
 				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
-				fmt.Println(bookmark.Children)
+				fmt.Println(getChildren(bookmark))
+				// fmt.Println(bookmark.Children)
 				fmt.Println("----------")
 			}
 			// text, err := json.Marshal(data)
@@ -127,7 +131,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func getChildren(c Child) []
+func getChildren(c Child) []InfoDisplayed {
+	var result []InfoDisplayed
+	if c.Type == "folder" {
+		for _, v := range c.Children {
+			result = append(result, getChildren(v)...)
+		}
+	} else {
+		var pair InfoDisplayed
+		pair.name, pair.url = c.Name, c.Url
+		result = append(result, pair)
+	}
+	return result
+}
 
 func (m model) View() string {
 	// The header
