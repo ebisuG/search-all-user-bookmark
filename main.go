@@ -15,10 +15,6 @@ type model struct {
 	searchString textinput.Model
 }
 
-//Handle file data as json
-//get data
-//search by key-map
-
 type ParentJson struct {
 	Checksum     string `json:"checksum"`
 	Roots        Roots  `json:"roots"`
@@ -86,7 +82,6 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
-	// fmt.Println("msg : ", msg)
 	switch msg := msg.(type) {
 
 	// Is it a key press?
@@ -103,8 +98,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// The "enter" key and the spacebar (a literal space) toggle
 			// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
-			// fmt.Println("enter is pushed")
-			// fmt.Println("searchString : ", m.searchString.View()[2:], "\nnewline")
 			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
 			checkError(err)
 			var bookmarks ParentJson
@@ -112,19 +105,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			json.Unmarshal(data, &bookmarks)
 			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
 				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
-				// fmt.Println(getChildren(bookmark))
-				// fmt.Println(bookmark.Children)
-				// fmt.Println("----------")
 				display = append(display, getChildren(bookmark)...)
 			}
 			fmt.Println(display)
 			display = filterByString(display, "japan")
 			fmt.Println("-------------------------")
 			fmt.Println(display)
-			// text, err := json.Marshal(data)
-			// fmt.Println("text : ", text)
 
-			// fmt.Println(string(data))
 			for _, v := range display {
 				fmt.Sprintln("display :", v, "\n ")
 			}
