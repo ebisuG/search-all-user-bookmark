@@ -102,18 +102,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			checkError(err)
 			var bookmarks ParentJson
 			var display []InfoDisplayed
+			var searchWord []string
+			for _, v := range m.searchString.Value() {
+				searchWord = append(searchWord, string(v))
+			}
 			json.Unmarshal(data, &bookmarks)
 			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
 				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
 				display = append(display, getChildren(bookmark)...)
 			}
-			fmt.Println(display)
-			display = filterByString(display, "japan")
-			fmt.Println("-------------------------")
-			fmt.Println(display)
+			display = filterByString(display, strings.Join(searchWord, ""))
 
 			for _, v := range display {
-				fmt.Sprintln("display :", v, "\n ")
+				fmt.Println(v.name, " : ", v.url, "")
 			}
 			fmt.Println("")
 		}
@@ -144,7 +145,7 @@ func filterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 	for _, v := range pairs {
 		isInName := strings.Contains(v.name, search)
 		isInUrl := strings.Contains(v.url, search)
-		if isInName && isInUrl {
+		if isInName || isInUrl {
 			result = append(result, v)
 		}
 	}
