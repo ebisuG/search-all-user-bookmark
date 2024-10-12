@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -12,6 +13,43 @@ import (
 type model struct {
 	searchPath   []string
 	searchString textinput.Model
+}
+
+//Handle file data as json
+//get data
+//search by key-map
+
+type ParentJson struct {
+	Checksum     string `json:"checksum"`
+	Roots        Roots  `json:"roots"`
+	SyncMetadata string `json:"sync_metadata"`
+	Version      int    `json:"version"`
+}
+
+type Roots struct {
+	BookmarkBar BookmarkBar `json:"bookmark_bar"`
+}
+
+type BookmarkBar struct {
+	Children []Child `json:"children"`
+	Other    Child   `json:"other"`
+	Synced   Child   `json:"synced"`
+}
+
+type Child struct {
+	Children     []Child   `json:"children"`
+	DateAdded    string    `json:"date_added"`
+	DateLastUsed string    `json:"date_last_used"`
+	Guid         string    `json:"guid"`
+	Id           string    `json:"id"`
+	MetaInfo     meta_info `json:"meta_info"`
+	Name         string    `json:"name"`
+	Type         string    `json:"type"`
+	Url          string    `json:"url"`
+}
+
+type meta_info struct {
+	PowerBookmarkMeta string `json:"power_bookmark_meta"`
 }
 
 func initialModel() model {
@@ -64,7 +102,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// fmt.Println("searchString : ", m.searchString.View()[2:], "\nnewline")
 			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
 			checkError(err)
-			fmt.Println(string(data))
+			var bookmarks ParentJson
+			json.Unmarshal(data, &bookmarks)
+			// fmt.Println(bookmarks.Roots.BookmarkBar)
+			// fmt.Println(bookmarks.Roots.BookmarkBar.Children)
+			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
+				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
+				fmt.Println(bookmark.Children)
+				fmt.Println("----------")
+			}
+			// text, err := json.Marshal(data)
+			// fmt.Println("text : ", text)
+
+			// fmt.Println(string(data))
 			fmt.Println("")
 		}
 	}
