@@ -108,19 +108,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
 			checkError(err)
 			var bookmarks ParentJson
+			var display []InfoDisplayed
 			json.Unmarshal(data, &bookmarks)
-			// fmt.Println(bookmarks.Roots.BookmarkBar)
-			// fmt.Println(bookmarks.Roots.BookmarkBar.Children)
 			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
 				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
-				fmt.Println(getChildren(bookmark))
+				// fmt.Println(getChildren(bookmark))
 				// fmt.Println(bookmark.Children)
-				fmt.Println("----------")
+				// fmt.Println("----------")
+				display = append(display, getChildren(bookmark)...)
 			}
+			fmt.Println(display)
+			display = filterByString(display, "japan")
+			fmt.Println("-------------------------")
+			fmt.Println(display)
 			// text, err := json.Marshal(data)
 			// fmt.Println("text : ", text)
 
 			// fmt.Println(string(data))
+			for _, v := range display {
+				fmt.Sprintln("display :", v, "\n ")
+			}
 			fmt.Println("")
 		}
 	}
@@ -141,6 +148,18 @@ func getChildren(c Child) []InfoDisplayed {
 		var pair InfoDisplayed
 		pair.name, pair.url = c.Name, c.Url
 		result = append(result, pair)
+	}
+	return result
+}
+
+func filterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
+	var result []InfoDisplayed
+	for _, v := range pairs {
+		isInName := strings.Contains(v.name, search)
+		isInUrl := strings.Contains(v.url, search)
+		if isInName && isInUrl {
+			result = append(result, v)
+		}
 	}
 	return result
 }
