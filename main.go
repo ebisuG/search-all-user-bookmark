@@ -42,15 +42,17 @@ type Child struct {
 	DateLastUsed string    `json:"date_last_used"`
 	Guid         string    `json:"guid"`
 	Id           string    `json:"id"`
-	MetaInfo     meta_info `json:"meta_info"`
+	MetaInfo     Meta_info `json:"meta_info"`
 	Name         string    `json:"name"`
 	Type         string    `json:"type"`
 	Url          string    `json:"url"`
 }
 
-type meta_info struct {
+type Meta_info struct {
 	PowerBookmarkMeta string `json:"power_bookmark_meta"`
 }
+
+
 
 func initialModel() model {
 	ti := textinput.New()
@@ -124,6 +126,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.searchString, cmd = m.searchString.Update(msg)
 	return m, cmd
 }
+
+func getChildren(c Child) []
 
 func (m model) View() string {
 	// The header
