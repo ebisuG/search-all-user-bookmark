@@ -138,20 +138,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// The "enter" key and the spacebar (a literal space) toggle
 			// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
-			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
-			checkError(err)
-			var bookmarks ParentJson
 			var searchWord []string
 			for _, v := range m.searchString.Value() {
 				searchWord = append(searchWord, string(v))
 			}
-			json.Unmarshal(data, &bookmarks)
 			var display []InfoDisplayed
-			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
-				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
-				display = append(display, getChildren(bookmark)...)
-			}
-			display = filterByString(display, strings.Join(searchWord, ""))
+			display = filterByString(m.allUrl, strings.Join(searchWord, ""))
 
 			for _, v := range display {
 				fmt.Println(v.name, " : ", v.url, "")
