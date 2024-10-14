@@ -53,6 +53,10 @@ type InfoDisplayed struct {
 	url  string
 }
 
+type SettingFile struct {
+	UserName string `json:"username"`
+}
+
 func initialModel() model {
 	ti := textinput.New()
 	ti.Placeholder = "Search keyword"
@@ -60,16 +64,9 @@ func initialModel() model {
 	ti.CharLimit = 156
 	ti.Width = 20
 
-	username := os.Getenv("WindowsUserName")
-	var searchPathString strings.Builder
-	searchPathString.WriteString("C:\\Users\\")
-	searchPathString.WriteString(username)
-	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
 	fmt.Println("Press Ctrl + c when you quit")
-	fmt.Println("searchPathString : ", searchPathString.String())
-
 	return model{
-		searchPath:   []string{searchPathString.String()},
+		searchPath:   []string{getPathName()},
 		searchString: ti,
 	}
 }
@@ -150,6 +147,20 @@ func filterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		}
 	}
 	return result
+}
+
+func getPathName() string {
+	data, err := os.ReadFile("./settings.json")
+	if err != nil {
+		panic(err)
+	}
+	var settings SettingFile
+	json.Unmarshal(data, &settings)
+	var searchPathString strings.Builder
+	searchPathString.WriteString("C:\\Users\\")
+	searchPathString.WriteString(settings.UserName)
+	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
+	return searchPathString.String()
 }
 
 func (m model) View() string {
