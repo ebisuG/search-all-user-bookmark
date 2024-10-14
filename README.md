@@ -1,6 +1,7 @@
 # Overview
 This is a CLI tool to search all bookmarks with a keyword over user Profiles in Google Chrome.\
-Now for Windows only.
+Now for Windows only.\
+Using [Bubbletea](https://github.com/charmbracelet/bubbletea), thank you!.
 
 # Usage
 1. Write your user name in settings_example.json. In Windows11, it's the first 5 character of your user name. Please check __C:\Users:\Your username__
