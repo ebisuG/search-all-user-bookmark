@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -13,6 +14,7 @@ import (
 type model struct {
 	searchPath   []string
 	searchString textinput.Model
+	allUrl       []InfoDisplayed
 }
 
 type ParentJson struct {
@@ -53,6 +55,10 @@ type InfoDisplayed struct {
 	url  string
 }
 
+type SettingFile struct {
+	UserName string `json:"username"`
+}
+
 func initialModel() model {
 	ti := textinput.New()
 	ti.Placeholder = "Search keyword"
@@ -60,22 +66,54 @@ func initialModel() model {
 	ti.CharLimit = 156
 	ti.Width = 20
 
-	username := os.Getenv("WindowsUserName")
-	var searchPathString strings.Builder
-	searchPathString.WriteString("C:\\Users\\")
-	searchPathString.WriteString(username)
-	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
 	fmt.Println("Press Ctrl + c when you quit")
-	fmt.Println("searchPathString : ", searchPathString.String())
-
+	fmt.Println("Reading all bookmark files...")
+	bookmarkFilesPath := getAllBookmarkFilePath()
+	var allData []InfoDisplayed
+	allData = append(allData, readBookmarkFile(getPathName()+"\\Default\\Bookmarks")...)
+	for _, v := range bookmarkFilesPath {
+		allData = append(allData, readBookmarkFile(v)...)
+	}
+	fmt.Println("Finish reading bookmark files...")
 	return model{
-		searchPath:   []string{searchPathString.String()},
+		searchPath:   []string{getPathName()},
 		searchString: ti,
+		allUrl:       allData,
 	}
 }
 
+func readBookmarkFile(path string) []InfoDisplayed {
+	data, err := os.ReadFile(path)
+	checkError(err)
+	var bookmarks ParentJson
+	json.Unmarshal(data, &bookmarks)
+	var display []InfoDisplayed
+	for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
+		bookmark := bookmarks.Roots.BookmarkBar.Children[i]
+		display = append(display, getChildren(bookmark)...)
+	}
+	return display
+}
+
+func getAllBookmarkFilePath() []string {
+	var bookmarksFilePath []string
+	pathName := getPathName()
+	files, err := os.ReadDir(pathName)
+	if err != nil {
+		panic(err)
+	}
+	r, _ := regexp.Compile("^Profile [0-9]*")
+
+	for _, v := range files {
+		match := r.MatchString(v.Name())
+		if v.IsDir() && match {
+			bookmarksFilePath = append(bookmarksFilePath, pathName+"\\"+v.Name()+"\\Bookmarks")
+		}
+	}
+	return bookmarksFilePath
+}
+
 func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
 	return textinput.Blink
 }
 
@@ -84,34 +122,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 
-	// Is it a key press?
 	case tea.KeyMsg:
 
-		// Cool, what was the actual key pressed?
 		switch msg.String() {
 
-		// These keys should exit the program.
 		case "ctrl+c":
 			fmt.Println("Bye bye!")
 			return m, tea.Quit
 
-			// The "enter" key and the spacebar (a literal space) toggle
-			// the selected state for the item that the cursor is pointing at.
 		case "enter", " ":
-			data, err := os.ReadFile(m.searchPath[0] + "\\Default\\Bookmarks")
-			checkError(err)
-			var bookmarks ParentJson
-			var display []InfoDisplayed
 			var searchWord []string
 			for _, v := range m.searchString.Value() {
 				searchWord = append(searchWord, string(v))
 			}
-			json.Unmarshal(data, &bookmarks)
-			for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
-				bookmark := bookmarks.Roots.BookmarkBar.Children[i]
-				display = append(display, getChildren(bookmark)...)
-			}
-			display = filterByString(display, strings.Join(searchWord, ""))
+			var display []InfoDisplayed
+			display = filterByString(m.allUrl, strings.Join(searchWord, ""))
 
 			for _, v := range display {
 				fmt.Println(v.name, " : ", v.url, "")
@@ -120,8 +145,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
 	m.searchString, cmd = m.searchString.Update(msg)
 	return m, cmd
 }
@@ -152,17 +175,27 @@ func filterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 	return result
 }
 
+func getPathName() string {
+	data, err := os.ReadFile("./settings.json")
+	if err != nil {
+		panic(err)
+	}
+	var settings SettingFile
+	json.Unmarshal(data, &settings)
+	var searchPathString strings.Builder
+	searchPathString.WriteString("C:\\Users\\")
+	searchPathString.WriteString(settings.UserName)
+	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
+	return searchPathString.String()
+}
+
 func (m model) View() string {
-	// The header
 	s := "Below string is being searched... \n\n"
 	s += fmt.Sprintf("%s\n", m.searchString.View())
 
-	// The footer
 	s += "\nPress q to quit.\n"
 
-	// Send the UI for rendering
 	return fmt.Sprintf("%s\n", m.searchString.View())
-	// return s
 }
 
 func checkError(e error) {
