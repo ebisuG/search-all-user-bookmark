@@ -15,11 +15,6 @@ type model struct {
 	allUrl       []util.InfoDisplayed
 }
 
-// type InfoDisplayed struct {
-// 	name string
-// 	url  string
-// }
-
 func InitialModel() model {
 	ti := textinput.New()
 	ti.Placeholder = "Search keyword"
