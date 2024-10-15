@@ -14,8 +14,9 @@ go run main.go
 
 # Testing
 ## util package
-Before ```go test```, you should set username as environmental variable.
-```$Env:UserNameForTest="username"```
+Before ```go test```, you should set username as environmental variable.\
+```$Env:UserNameForTest="username"```\
+And put settings.json you want to use in the same folder.
 
 # Valid version
 Windows : 11\
