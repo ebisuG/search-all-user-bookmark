@@ -1,0 +1,221 @@
+{
+    "checksum": "7a0fe0ac7f8fcbebe1005c82cfe82f33",
+    "roots": {
+       "bookmark_bar": {
+          "children": [ {
+             "children": [ {
+                "date_added": "13373449906305324",
+                "date_last_used": "0",
+                "guid": "2a3f92d7-ae1d-4250-b704-78160c2959fd",
+                "id": "5",
+                "meta_info": {
+                   "power_bookmark_meta": ""
+                },
+                "name": "The Go Programming Language",
+                "type": "url",
+                "url": "https://go.dev/"
+             }, {
+                "date_added": "13373450120017106",
+                "date_last_used": "0",
+                "guid": "ba718eb1-aaba-404b-83ce-bedea282a697",
+                "id": "20",
+                "meta_info": {
+                   "power_bookmark_meta": ""
+                },
+                "name": "TypeScript: JavaScript With Syntax For Types.",
+                "type": "url",
+                "url": "https://www.typescriptlang.org/"
+             }, {
+                "date_added": "13373450136630519",
+                "date_last_used": "0",
+                "guid": "a3c18301-d5b3-487f-bc40-81552602b192",
+                "id": "21",
+                "meta_info": {
+                   "power_bookmark_meta": ""
+                },
+                "name": "前書き | Scala Documentation",
+                "type": "url",
+                "url": "https://docs.scala-lang.org/ja/tour/tour-of-scala.html"
+             }, {
+                "date_added": "13373450158666794",
+                "date_last_used": "0",
+                "guid": "1c9de68e-6e5f-4b2e-940e-629ba4769fe3",
+                "id": "22",
+                "meta_info": {
+                   "power_bookmark_meta": ""
+                },
+                "name": "The Elixir programming language",
+                "type": "url",
+                "url": "https://elixir-lang.org/"
+             } ],
+             "date_added": "13373449921620643",
+             "date_last_used": "0",
+             "date_modified": "13373450158666794",
+             "guid": "99a7bf18-6231-4101-b0ec-61011293a047",
+             "id": "6",
+             "name": "Programming",
+             "type": "folder"
+          }, {
+             "children": [ {
+                "children": [ {
+                   "date_added": "13373450086571718",
+                   "date_last_used": "0",
+                   "guid": "bf716f70-ed44-44d5-89fd-7f64d2728bb5",
+                   "id": "18",
+                   "meta_info": {
+                      "power_bookmark_meta": ""
+                   },
+                   "name": "football - ウィクショナリー日本語版",
+                   "type": "url",
+                   "url": "https://ja.wiktionary.org/wiki/football"
+                }, {
+                   "date_added": "13373450101475168",
+                   "date_last_used": "0",
+                   "guid": "c3c10ccc-e92f-4286-ac98-aa3dc188ab44",
+                   "id": "19",
+                   "meta_info": {
+                      "power_bookmark_meta": ""
+                   },
+                   "name": "Kitchen Utensils + Tools | Williams Sonoma",
+                   "type": "url",
+                   "url": "https://www.williams-sonoma.com/shop/cooks-tools/"
+                } ],
+                "date_added": "13373449958242260",
+                "date_last_used": "0",
+                "date_modified": "13373450120017106",
+                "guid": "1ffbe10d-d02f-44a4-ab7a-9a6697497d21",
+                "id": "11",
+                "name": "hobby",
+                "type": "folder"
+             }, {
+                "date_added": "13373450055767649",
+                "date_last_used": "0",
+                "guid": "4d0fe7dc-df32-4f1f-b40a-824fad198713",
+                "id": "17",
+                "meta_info": {
+                   "power_bookmark_meta": ""
+                },
+                "name": "アニメ・マンガの日本語 Japanese in Anime & Manga",
+                "type": "url",
+                "url": "https://anime-manga.jp/"
+             } ],
+             "date_added": "13373449932422179",
+             "date_last_used": "0",
+             "date_modified": "13373450086571718",
+             "guid": "3b78295d-2e42-46d7-b5e2-b3e9e7cb79bf",
+             "id": "7",
+             "name": "Favorite",
+             "type": "folder"
+          }, {
+             "children": [ {
+                "children": [ {
+                   "children": [ {
+                      "date_added": "13373449977049903",
+                      "date_last_used": "0",
+                      "guid": "29640574-873a-4204-a9de-f7fd376e5814",
+                      "id": "13",
+                      "meta_info": {
+                         "power_bookmark_meta": ""
+                      },
+                      "name": "ケーキ｜シャトレーゼ公式サイト(並び順：並び順)",
+                      "type": "url",
+                      "url": "https://www.chateraise.co.jp/ec/c/ccake/"
+                   } ],
+                   "date_added": "13373449964608999",
+                   "date_last_used": "0",
+                   "date_modified": "13373449994407771",
+                   "guid": "2bb3c0dd-12e7-46a1-a14e-50c2c87e0ca1",
+                   "id": "12",
+                   "name": "cake",
+                   "type": "folder"
+                }, {
+                   "date_added": "13373449994407771",
+                   "date_last_used": "0",
+                   "guid": "7ab6d161-23e0-4488-aa03-7d4740f43742",
+                   "id": "14",
+                   "meta_info": {
+                      "power_bookmark_meta": ""
+                   },
+                   "name": "ステラおばさんのクッキー",
+                   "type": "url",
+                   "url": "https://www.stella-online.jp/"
+                } ],
+                "date_added": "13373449942103169",
+                "date_last_used": "0",
+                "date_modified": "13373450013435489",
+                "guid": "50f8c541-4063-4df6-b3b1-fecfa3717c71",
+                "id": "9",
+                "name": "Sweets",
+                "type": "folder"
+             }, {
+                "children": [ {
+                   "date_added": "13373450013435489",
+                   "date_last_used": "0",
+                   "guid": "30bcab3f-4229-4e3d-8c30-b5811d731960",
+                   "id": "15",
+                   "meta_info": {
+                      "power_bookmark_meta": ""
+                   },
+                   "name": "カレーの人気&定番レシピ・作り方56選～本格・簡単すべて見せます！ | キッコーマン | ホームクッキング",
+                   "type": "url",
+                   "url": "https://www.kikkoman.co.jp/homecook/theme/popular/kare.html"
+                }, {
+                   "date_added": "13373450037083778",
+                   "date_last_used": "0",
+                   "guid": "ce2d6430-2068-4e6c-8d69-16fed0de242f",
+                   "id": "16",
+                   "meta_info": {
+                      "power_bookmark_meta": ""
+                   },
+                   "name": "Lava Red Ramen at Mouko Tanmen Nakamoto",
+                   "type": "url",
+                   "url": "https://www.5amramen.com/post/mouko-tanmen-nakamoto"
+                } ],
+                "date_added": "13373449946986478",
+                "date_last_used": "0",
+                "date_modified": "13373450055767649",
+                "guid": "33dddc93-d191-488d-99d6-edbe755becf8",
+                "id": "10",
+                "name": "Spicy",
+                "type": "folder"
+             } ],
+             "date_added": "13373449936441228",
+             "date_last_used": "0",
+             "date_modified": "13373449946986620",
+             "guid": "c29a6e6f-f955-416b-9798-eb5fd64079a9",
+             "id": "8",
+             "name": "Food",
+             "type": "folder"
+          } ],
+          "date_added": "13373449885360835",
+          "date_last_used": "0",
+          "date_modified": "13373449936441359",
+          "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+          "id": "1",
+          "name": "ブックマーク バー",
+          "type": "folder"
+       },
+       "other": {
+          "children": [  ],
+          "date_added": "13373449885360838",
+          "date_last_used": "0",
+          "date_modified": "13373449906305324",
+          "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+          "id": "2",
+          "name": "その他のブックマーク",
+          "type": "folder"
+       },
+       "synced": {
+          "children": [  ],
+          "date_added": "13373449885360843",
+          "date_last_used": "0",
+          "date_modified": "0",
+          "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+          "id": "3",
+          "name": "モバイルのブックマーク",
+          "type": "folder"
+       }
+    },
+    "version": 1
+ }
+ 
