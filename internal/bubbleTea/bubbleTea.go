@@ -7,7 +7,6 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/lipgloss/table"
 	"github.com/ebisuG/search-all-user-bookmark/internal/util"
 )
 
@@ -80,39 +79,6 @@ func (m model) View() string {
 	s += "\nPress q to quit.\n"
 
 	return fmt.Sprintf("%s\n", m.searchString.View())
-}
-
-func FormatTable(info []util.InfoDisplayed) *table.Table {
-
-	// HeaderStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FA6700"))
-	nameColor := lipgloss.Color("#F77F0F")
-	urlColor := lipgloss.Color("#FAEECA")
-	// var t table.Table
-	t := table.New().
-		// Border(lipgloss.NormalBorder()).
-		// BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("99"))).
-		StyleFunc(func(row, col int) lipgloss.Style {
-			// return HeaderStyle
-			switch {
-			// case row == 0:
-			// 	return HeaderStyle
-			case col == 0:
-				return lipgloss.NewStyle().Foreground(nameColor).Bold(true).Width(40).MarginBottom(1)
-			case col == 1:
-				return lipgloss.NewStyle().Foreground(urlColor).Bold(true).MarginBottom(1)
-			default:
-				return lipgloss.NewStyle()
-			}
-		}).
-		Headers("Name", "URL").
-		Rows()
-
-	// You can also add tables row-by-row
-	// t.Row("English", "You look absolutely fabulous.", "How's it going?")
-	for _, v := range info {
-		t.Row(v.Name, v.Url)
-	}
-	return t
 }
 
 func FormatDisplay(info []util.InfoDisplayed) {
