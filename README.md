@@ -12,6 +12,10 @@ go run main.go
 ```
 4. Put a keyword you want to search, and enter. Ctrl + c terminate the program.
 
+# Testing
+## util package
+Before ```go test```, you should set username as environmental variable.
+```$Env:UserNameForTest="username"```
 
 # Valid version
 Windows : 11\
