@@ -26,3 +26,22 @@ func TestGetPathName(t *testing.T) {
 		t.Fatalf(`Path doesn't match. expect : %v, actual : %v`, expect, actual)
 	}
 }
+
+func TestFilterByString(t *testing.T) {
+	actual := ReadBookmarkFile("./testData/Bookmarks")
+	if FilterByString(actual, "https://go.dev/") == nil {
+		t.Fatalf(`Failed to filter, no https://go.dev/`)
+	}
+	if len(FilterByString(actual, "")) != 11 {
+		t.Fatalf(`Failed to filter, the case there is no char`)
+	}
+	if len(FilterByString(actual, "org")) != 4 {
+		t.Fatalf(`Failed to filter, counting org in the wrong way`)
+	}
+	if len(FilterByString(actual, "シャトレーゼ")) != 1 {
+		t.Fatalf(`Failed to filter, counting シャトレーゼ in the wrong way`)
+	}
+	if len(FilterByString(actual, "～本格・")) != 1 {
+		t.Fatalf(`Failed to filter, counting ～本格・ in the wrong way`)
+	}
+}
