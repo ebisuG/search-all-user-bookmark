@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/ebisuG/search-all-user-bookmark/internal/util"
 )
 
@@ -14,11 +15,6 @@ type model struct {
 	searchString textinput.Model
 	allUrl       []util.InfoDisplayed
 }
-
-// type InfoDisplayed struct {
-// 	name string
-// 	url  string
-// }
 
 func InitialModel() model {
 	ti := textinput.New()
@@ -67,10 +63,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			var display []util.InfoDisplayed
 			display = util.FilterByString(m.allUrl, strings.Join(searchWord, ""))
-
-			for _, v := range display {
-				fmt.Println(v.Name, " : ", v.Url, "")
-			}
+			FormatDisplay(display)
 			fmt.Println("")
 		}
 	}
@@ -86,4 +79,14 @@ func (m model) View() string {
 	s += "\nPress q to quit.\n"
 
 	return fmt.Sprintf("%s\n", m.searchString.View())
+}
+
+func FormatDisplay(info []util.InfoDisplayed) {
+	nameColor := lipgloss.Color("#F77F0F")
+	urlColor := lipgloss.Color("#FAEECA")
+	for _, v := range info {
+		fmt.Println(lipgloss.NewStyle().Foreground(nameColor).Bold(true).SetString(v.Name),
+			lipgloss.NewStyle().Foreground(urlColor).Bold(true).MarginBottom(1).SetString(v.Url),
+		)
+	}
 }
