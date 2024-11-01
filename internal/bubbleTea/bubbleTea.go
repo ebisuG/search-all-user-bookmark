@@ -23,7 +23,7 @@ func InitialModel() model {
 	ti.CharLimit = 156
 	ti.Width = 20
 
-	fmt.Println("Press Ctrl + c when you quit")
+	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl + c when you quit"))
 	fmt.Println("Reading all bookmark files...")
 	bookmarkFilesPath := util.GetAllBookmarkFilePath()
 	var allData []util.InfoDisplayed
