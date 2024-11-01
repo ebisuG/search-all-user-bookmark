@@ -1,10 +1,14 @@
 package util
 
 import (
+	"bufio"
 	"encoding/json"
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 type InfoDisplayed struct {
@@ -109,7 +113,13 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 func GetPathName() string {
 	data, err := os.ReadFile("./settings.json")
 	if err != nil {
-		panic(err)
+		errColor := lipgloss.Color("#f52c43")
+		fmt.Println(lipgloss.NewStyle().Foreground(errColor).Bold(true).SetString(err.Error()))
+		fmt.Println(lipgloss.NewStyle().Foreground(errColor).Bold(true).SetString("Failed to read ./settings.json. Please check the setting file."))
+		fmt.Println(lipgloss.NewStyle().Foreground(errColor).Bold(true).SetString("You can visit https://github.com/ebisuG/search-all-user-bookmark"))
+		fmt.Print("Press 'Enter' to close...")
+		bufio.NewReader(os.Stdin).ReadBytes('\n')
+		os.Exit(1)
 	}
 	var settings SettingFile
 	json.Unmarshal(data, &settings)
