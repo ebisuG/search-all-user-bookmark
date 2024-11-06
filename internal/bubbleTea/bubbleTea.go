@@ -64,6 +64,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var display []util.InfoDisplayed
 			display = util.FilterByString(m.allUrl, strings.Join(searchWord, ""))
 			FormatDisplay(display)
+			m.searchString.Reset()
 			fmt.Println("")
 		}
 	}
