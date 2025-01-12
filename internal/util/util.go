@@ -3,6 +3,7 @@ package util
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -53,17 +54,19 @@ type SettingFile struct {
 	UserName string `json:"username"`
 }
 
-func ReadBookmarkFile(path string) []InfoDisplayed {
+func ReadBookmarkFile(path string) ([]InfoDisplayed, error) {
+	var display []InfoDisplayed
 	data, err := os.ReadFile(path)
-	CheckError(err)
+	if err != nil {
+		return display, errors.New("no file")
+	}
 	var bookmarks ParentJson
 	json.Unmarshal(data, &bookmarks)
-	var display []InfoDisplayed
 	for i := 0; i < len(bookmarks.Roots.BookmarkBar.Children); i++ {
 		bookmark := bookmarks.Roots.BookmarkBar.Children[i]
 		display = append(display, GetChildren(bookmark)...)
 	}
-	return display
+	return display, nil
 }
 
 func GetAllBookmarkFilePath() []string {
