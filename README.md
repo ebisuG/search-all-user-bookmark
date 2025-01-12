@@ -21,4 +21,5 @@ And put settings.json you want to use in the same folder.
 # Valid version
 Windows : 11\
 Chrome :  129.0.6668.90\
-Go : 1.22.3
+Go : 1.22.3\
+Powershell : 5.1

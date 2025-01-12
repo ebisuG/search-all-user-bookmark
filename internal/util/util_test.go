@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -28,7 +29,10 @@ func TestGetPathName(t *testing.T) {
 }
 
 func TestFilterByString(t *testing.T) {
-	actual := ReadBookmarkFile("./testData/Bookmarks")
+	actual, err := ReadBookmarkFile("./testData/Bookmarks")
+	if err != nil {
+		fmt.Println(err)
+	}
 	if FilterByString(actual, "https://go.dev/") == nil {
 		t.Fatalf(`Failed to filter, no https://go.dev/`)
 	}
