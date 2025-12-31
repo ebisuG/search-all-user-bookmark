@@ -107,10 +107,26 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		isInName := strings.Contains(v.Name, search)
 		isInUrl := strings.Contains(v.Url, search)
 		if isInName || isInUrl {
-			result = append(result, v)
+			fixedLengthName := firstChars(50, v.Name)
+			fixedLengthUrl := firstChars(30, v.Url)
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: fixedLengthUrl})
 		}
 	}
 	return result
+}
+
+func firstChars(fixedLength int, s string) string {
+	runes := []rune(s)
+
+	if len(runes) >= fixedLength {
+		return string(runes[:fixedLength])
+	}
+
+	padding := make([]rune, fixedLength-len(runes))
+	for i := range padding {
+		padding[i] = ' '
+	}
+	return string(append(runes, padding...))
 }
 
 func GetPathName() string {
