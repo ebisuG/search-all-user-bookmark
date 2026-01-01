@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-runewidth"
 )
 
 type InfoDisplayed struct {
@@ -116,17 +117,23 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 }
 
 func firstChars(fixedLength int, s string) string {
-	runes := []rune(s)
+	result := ""
+	currentWidth := 0
 
-	if len(runes) >= fixedLength {
-		return string(runes[:fixedLength])
+	for _, r := range s {
+		w := runewidth.RuneWidth(r)
+		if currentWidth+w >= fixedLength {
+			break
+		}
+		result += string(r)
+		currentWidth += w
 	}
 
-	padding := make([]rune, fixedLength-len(runes))
-	for i := range padding {
-		padding[i] = ' '
+	if currentWidth <= fixedLength {
+		result += runewidth.FillRight("", fixedLength-currentWidth)
 	}
-	return string(append(runes, padding...))
+
+	return result
 }
 
 func GetPathName() string {
