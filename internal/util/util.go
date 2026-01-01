@@ -119,10 +119,13 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 func firstChars(fixedLength int, s string) string {
 	result := ""
 	currentWidth := 0
+	ellipsis := "..."
 
 	for _, r := range s {
 		w := runewidth.RuneWidth(r)
-		if currentWidth+w >= fixedLength {
+		if currentWidth+w >= fixedLength-len(ellipsis) {
+			result += ellipsis
+			currentWidth += len(ellipsis)
 			break
 		}
 		result += string(r)
