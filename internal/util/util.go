@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/mattn/go-runewidth"
 )
 
 type InfoDisplayed struct {
@@ -107,9 +108,33 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		isInName := strings.Contains(v.Name, search)
 		isInUrl := strings.Contains(v.Url, search)
 		if isInName || isInUrl {
-			result = append(result, v)
+			fixedLengthName := firstChars(100, v.Name)
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.Url})
 		}
 	}
+	return result
+}
+
+func firstChars(fixedLength int, s string) string {
+	result := ""
+	currentWidth := 0
+	ellipsis := "..."
+
+	for _, r := range s {
+		w := runewidth.RuneWidth(r)
+		if currentWidth+w >= fixedLength-len(ellipsis) {
+			result += ellipsis
+			currentWidth += len(ellipsis)
+			break
+		}
+		result += string(r)
+		currentWidth += w
+	}
+
+	if currentWidth <= fixedLength {
+		result += runewidth.FillRight("", fixedLength-currentWidth)
+	}
+
 	return result
 }
 
