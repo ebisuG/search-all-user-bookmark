@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/ebisuG/search-all-user-bookmark/internal/util"
+	"github.com/muesli/termenv"
 )
 
 type model struct {
@@ -25,6 +26,7 @@ func InitialModel() model {
 	ti.Width = 20
 
 	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl + c when you quit"))
+	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
 	fmt.Println("Reading all bookmark files...")
 	bookmarkFilesPath := util.GetAllBookmarkFilePath()
 	var allData []util.InfoDisplayed
@@ -94,10 +96,9 @@ func (m model) View() string {
 
 func FormatDisplay(info []util.InfoDisplayed) {
 	nameColor := lipgloss.Color("#F77F0F")
-	urlColor := lipgloss.Color("#FAEECA")
+
 	for _, v := range info {
-		fmt.Println(lipgloss.NewStyle().Foreground(nameColor).Bold(true).SetString(v.Name),
-			lipgloss.NewStyle().Foreground(urlColor).Bold(true).MarginBottom(1).SetString(v.Url),
-		)
+		hypelink := termenv.Hyperlink(v.Url, v.Name)
+		fmt.Println(" ", lipgloss.NewStyle().Foreground(nameColor).Bold(false).Render(hypelink))
 	}
 }

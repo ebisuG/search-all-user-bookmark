@@ -108,9 +108,8 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		isInName := strings.Contains(v.Name, search)
 		isInUrl := strings.Contains(v.Url, search)
 		if isInName || isInUrl {
-			fixedLengthName := firstChars(50, v.Name)
-			fixedLengthUrl := firstChars(30, v.Url)
-			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: fixedLengthUrl})
+			fixedLengthName := firstChars(100, v.Name)
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.Url})
 		}
 	}
 	return result
