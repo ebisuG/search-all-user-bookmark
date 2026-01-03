@@ -10,6 +10,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/mattn/go-runewidth v0.0.19
 	github.com/muesli/termenv v0.16.0
+	golang.org/x/text v0.32.0
 )
 
 require (
@@ -31,5 +32,4 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sys v0.39.0 // indirect
-	golang.org/x/text v0.3.8 // indirect
 )
