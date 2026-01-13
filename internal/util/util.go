@@ -132,7 +132,9 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		isInUrl := strings.Contains(v.BookmarkUrl.Record.Norm, searchWord)
 		if isInName || isInUrl {
 			fixedLengthName := firstChars(100, v.BookmarkTitle.Record.Raw)
-			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.BookmarkUrl.Record.Raw})
+			bookmarkDisplayed := BookmarkTitle{Record: Record{Raw: fixedLengthName, Norm: v.BookmarkTitle.Record.Norm}}
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.BookmarkUrl.Record.Raw,
+				BookmarkTitle: bookmarkDisplayed, BookmarkUrl: v.BookmarkUrl})
 		}
 	}
 	return result
