@@ -98,7 +98,7 @@ func FormatDisplay(info []util.InfoDisplayed) {
 	nameColor := lipgloss.Color("#F77F0F")
 
 	for _, v := range info {
-		hypelink := termenv.Hyperlink(v.Url, v.Name)
+		hypelink := termenv.Hyperlink(v.BookmarkUrl.Record.Raw, v.BookmarkTitle.Record.Raw)
 		fmt.Println(" ", lipgloss.NewStyle().Foreground(nameColor).Bold(false).Render(hypelink))
 	}
 }

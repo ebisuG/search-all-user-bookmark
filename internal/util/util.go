@@ -11,11 +11,27 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
+	"golang.org/x/text/cases"
 )
 
 type InfoDisplayed struct {
-	Name string
-	Url  string
+	Name          string
+	Url           string
+	BookmarkTitle BookmarkTitle
+	BookmarkUrl   BookmarkUrl
+}
+
+type BookmarkTitle struct {
+	Record Record
+}
+
+type BookmarkUrl struct {
+	Record Record
+}
+
+type Record struct {
+	Raw  string
+	Norm string
 }
 
 type ParentJson struct {
@@ -89,6 +105,7 @@ func GetAllBookmarkFilePath() []string {
 }
 
 func GetChildren(c Child) []InfoDisplayed {
+	folder := cases.Fold()
 	var result []InfoDisplayed
 	if c.Type == "folder" {
 		for _, v := range c.Children {
@@ -97,6 +114,10 @@ func GetChildren(c Child) []InfoDisplayed {
 	} else {
 		var pair InfoDisplayed
 		pair.Name, pair.Url = c.Name, c.Url
+		pair.BookmarkTitle.Record.Raw = c.Name
+		pair.BookmarkTitle.Record.Norm = folder.String(c.Name)
+		pair.BookmarkUrl.Record.Raw = c.Url
+		pair.BookmarkUrl.Record.Norm = folder.String(c.Url)
 		result = append(result, pair)
 	}
 	return result
@@ -104,12 +125,16 @@ func GetChildren(c Child) []InfoDisplayed {
 
 func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 	var result []InfoDisplayed
+	folder := cases.Fold()
+	searchWord := folder.String(search)
 	for _, v := range pairs {
-		isInName := strings.Contains(v.Name, search)
-		isInUrl := strings.Contains(v.Url, search)
+		isInName := strings.Contains(v.BookmarkTitle.Record.Norm, searchWord)
+		isInUrl := strings.Contains(v.BookmarkUrl.Record.Norm, searchWord)
 		if isInName || isInUrl {
-			fixedLengthName := firstChars(100, v.Name)
-			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.Url})
+			fixedLengthName := firstChars(100, v.BookmarkTitle.Record.Raw)
+			bookmarkDisplayed := BookmarkTitle{Record: Record{Raw: fixedLengthName, Norm: v.BookmarkTitle.Record.Norm}}
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.BookmarkUrl.Record.Raw,
+				BookmarkTitle: bookmarkDisplayed, BookmarkUrl: v.BookmarkUrl})
 		}
 	}
 	return result
