@@ -1,4 +1,4 @@
-package util
+package main
 
 import (
 	"bufio"
@@ -9,17 +9,11 @@ import (
 	"regexp"
 	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/mattn/go-runewidth"
 	"golang.org/x/text/cases"
 )
-
-type InfoDisplayed struct {
-	Name          string
-	Url           string
-	BookmarkTitle BookmarkTitle
-	BookmarkUrl   BookmarkUrl
-}
 
 type BookmarkTitle struct {
 	Record Record
@@ -187,4 +181,34 @@ func CheckError(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+
+	switch msg := msg.(type) {
+
+	case tea.KeyMsg:
+
+		switch msg.String() {
+
+		case "ctrl+c":
+			fmt.Println("Bye bye!")
+			return m, tea.Quit
+
+		case "enter", " ":
+			var searchWord []string
+			for _, v := range m.searchString.Value() {
+				searchWord = append(searchWord, string(v))
+			}
+			var display []InfoDisplayed
+			display = FilterByString(m.allUrl, strings.Join(searchWord, ""))
+			FormatDisplay(display)
+			m.searchString.Reset()
+			fmt.Println("")
+		}
+	}
+
+	m.searchString, cmd = m.searchString.Update(msg)
+	return m, cmd
 }
