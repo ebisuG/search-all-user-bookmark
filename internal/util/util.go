@@ -14,6 +14,24 @@ import (
 	"golang.org/x/text/cases"
 )
 
+type Bookmarks struct {
+	Bookmarks []Bookmark
+}
+
+type Searcher interface {
+	Search(keyword string) []InfoDisplayed
+}
+
+func (b Bookmarks) Search(keyword string) ([]InfoDisplayed, error) {
+	var result []InfoDisplayed
+	return result, nil
+}
+
+type Bookmark struct {
+	BookmarkTitle BookmarkTitle
+	BookmarkUrl   BookmarkUrl
+}
+
 type InfoDisplayed struct {
 	Name          string
 	Url           string
