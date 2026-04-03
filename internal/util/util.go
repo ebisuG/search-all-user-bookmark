@@ -18,6 +18,32 @@ type Bookmarks struct {
 	Bookmarks []Bookmark
 }
 
+type Config struct {
+	SearchPath []string
+	CliSetting CliSetting
+}
+
+type CliSetting struct {
+	UserName string `json:"username"`
+}
+
+type Loader interface {
+	LoadConfig() Config
+}
+
+type Finder interface {
+	FindeSearchPath() []string
+}
+
+// func (c Config) LoadConfig() (Config, error) {
+// 	var cli CliSetting
+// 	data, err := os.ReadFile("./settings.json")
+// 	json.Unmarshal(data, &cli.UserName)
+
+// 	path :=
+
+// }
+
 type Searcher interface {
 	Search(keyword string) []InfoDisplayed
 }
