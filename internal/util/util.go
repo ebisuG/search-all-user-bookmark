@@ -22,11 +22,6 @@ type Searcher interface {
 	Search(keyword string) []InfoDisplayed
 }
 
-func (b Bookmarks) Search(keyword string) ([]InfoDisplayed, error) {
-	var result []InfoDisplayed
-	return result, nil
-}
-
 type Bookmark struct {
 	BookmarkTitle BookmarkTitle
 	BookmarkUrl   BookmarkUrl
@@ -156,6 +151,23 @@ func FilterByString(pairs []InfoDisplayed, search string) []InfoDisplayed {
 		}
 	}
 	return result
+}
+
+func (b Bookmarks) Search(keyword string) ([]InfoDisplayed, error) {
+	var result []InfoDisplayed
+	folder := cases.Fold()
+	searchWord := folder.String(keyword)
+	for _, v := range b.Bookmarks {
+		isInName := strings.Contains(v.BookmarkTitle.Record.Norm, searchWord)
+		isInUrl := strings.Contains(v.BookmarkUrl.Record.Norm, searchWord)
+		if isInName || isInUrl {
+			fixedLengthName := firstChars(100, v.BookmarkTitle.Record.Raw)
+			bookmarkDisplayed := BookmarkTitle{Record: Record{Raw: fixedLengthName, Norm: v.BookmarkTitle.Record.Norm}}
+			result = append(result, InfoDisplayed{Name: fixedLengthName, Url: v.BookmarkUrl.Record.Raw,
+				BookmarkTitle: bookmarkDisplayed, BookmarkUrl: v.BookmarkUrl})
+		}
+	}
+	return result, nil
 }
 
 func firstChars(fixedLength int, s string) string {
