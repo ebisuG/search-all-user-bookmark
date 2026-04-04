@@ -1,0 +1,111 @@
+package cli
+
+import (
+	"fmt"
+	"log"
+	"strings"
+
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/ebisuG/search-all-user-bookmark/internal/search"
+
+	// "github.com/ebisuG/search-all-user-bookmark/internal/search"
+
+	"github.com/muesli/termenv"
+)
+
+type model struct {
+	searchPath   []string
+	searchString textinput.Model
+	allUrl       []search.InfoDisplayed
+}
+
+func InitialModel() model {
+	ti := textinput.New()
+	ti.Placeholder = "Search keyword"
+	ti.Focus()
+	ti.CharLimit = 156
+	ti.Width = 20
+
+	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl + c when you quit"))
+	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
+	fmt.Println("Reading all bookmark files...")
+	// bookmarkFilesPath := search.GetAllBookmarkFilePath()
+	var config search.Config
+	config.LoadConfig("./settings.json")
+	config.CliSetting.FindSearchPath()
+
+	var allData []search.InfoDisplayed
+	defaultData, err := search.ReadBookmarkFile(search.GetPathName() + "\\Default\\Bookmarks")
+	if err != nil {
+		log.Fatal(err)
+	}
+	allData = append(allData, defaultData...)
+	for _, v := range config.SearchPath {
+		profileData, err := search.ReadBookmarkFile(v)
+		if err != nil {
+			fmt.Println("No file : ", v)
+			continue
+		}
+		allData = append(allData, profileData...)
+	}
+	fmt.Println("Finish reading bookmark files...")
+	return model{
+		searchPath:   []string{search.GetPathName()},
+		searchString: ti,
+		allUrl:       allData,
+	}
+}
+
+func (m model) Init() tea.Cmd {
+	return textinput.Blink
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+
+	switch msg := msg.(type) {
+
+	case tea.KeyMsg:
+
+		switch msg.String() {
+
+		case "ctrl+c":
+			fmt.Println("Bye bye!")
+			return m, tea.Quit
+
+		case "enter", " ":
+			var searchWord []string
+			for _, v := range m.searchString.Value() {
+				searchWord = append(searchWord, string(v))
+			}
+			var display []search.InfoDisplayed
+			display = search.FilterByString(m.allUrl, strings.Join(searchWord, ""))
+			FormatDisplay(display)
+			m.searchString.Reset()
+			fmt.Println("")
+		}
+	}
+
+	m.searchString, cmd = m.searchString.Update(msg)
+	return m, cmd
+}
+
+func (m model) View() string {
+	s := "Below string is being searched... \n\n"
+	s += fmt.Sprintf("%s\n", m.searchString.View())
+
+	s += "\nPress q to quit.\n"
+
+	return fmt.Sprintf("%s\n", m.searchString.View())
+}
+
+func FormatDisplay(info []search.InfoDisplayed) {
+	nameColor := lipgloss.Color("#F77F0F")
+
+	for _, v := range info {
+		hypelink := termenv.Hyperlink(v.BookmarkUrl.Record.Raw, v.BookmarkTitle.Record.Raw)
+		fmt.Println(" ", lipgloss.NewStyle().Foreground(nameColor).Bold(false).Render(hypelink))
+	}
+}
