@@ -28,32 +28,28 @@ type CliSetting struct {
 }
 
 type Loader interface {
-	LoadConfig(path string) (Config, error)
+	LoadConfig(path string) (*Config, error)
 }
 
 type Finder interface {
 	FindSearchPath() ([]string, error)
 }
 
-func (c *Config) LoadConfig(path string) {
-	var cli CliSetting
+func (c *Config) LoadConfig(path string) error {
 	data, err := os.ReadFile(path)
 	CheckError(err)
-	json.Unmarshal(data, &cli)
-	c.CliSetting = cli
-	c.SearchPath, err = cli.FindSearchPath()
+	if err := json.Unmarshal(data, &c.CliSetting); err != nil {
+		return err
+	}
+	paths, err := c.CliSetting.FindSearchPath()
+	c.SearchPath = paths
 	CheckError(err)
-	return
+	return nil
 }
 
 func (c CliSetting) FindSearchPath() ([]string, error) {
-	var result []string
-	var searchPathString strings.Builder
-	searchPathString.WriteString("C:\\Users\\")
-	searchPathString.WriteString(c.UserName)
-	searchPathString.WriteString("\\AppData\\Local\\Google\\Chrome\\User Data")
-	result = append(result, searchPathString.String())
-	return result, nil
+	base := "C:\\Users\\" + c.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
+	return []string{base}, nil
 }
 
 type Searcher interface {
