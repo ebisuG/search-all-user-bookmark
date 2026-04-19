@@ -35,22 +35,22 @@ type Finder interface {
 	FindSearchPath() ([]string, error)
 }
 
-func (c *Config) LoadConfig(path string) error {
-	data, err := os.ReadFile(path)
-	CheckError(err)
-	if err := json.Unmarshal(data, &c.CliSetting); err != nil {
-		return err
-	}
-	paths, err := c.CliSetting.FindSearchPath()
-	c.SearchPath = paths
-	CheckError(err)
-	return nil
-}
+// func (c *Config) LoadConfig(path string) error {
+// 	data, err := os.ReadFile(path)
+// 	CheckError(err)
+// 	if err := json.Unmarshal(data, &c.CliSetting); err != nil {
+// 		return err
+// 	}
+// 	paths, err := c.CliSetting.FindSearchPath()
+// 	c.SearchPath = paths
+// 	CheckError(err)
+// 	return nil
+// }
 
-func (c CliSetting) FindSearchPath() ([]string, error) {
-	base := "C:\\Users\\" + c.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
-	return []string{base}, nil
-}
+// func (c CliSetting) FindSearchPath() ([]string, error) {
+// 	base := "C:\\Users\\" + c.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
+// 	return []string{base}, nil
+// }
 
 type Searcher interface {
 	Search(keyword string) []InfoDisplayed
