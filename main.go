@@ -1,15 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
+	"strings"
 
-	// "github.com/ebisuG/search-all-user-bookmark/internal/bubbleTea"
-
-	"github.com/ebisuG/search-all-user-bookmark/internal/cli"
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
+	"github.com/ebisuG/search-all-user-bookmark/internal/infra"
+	"github.com/ebisuG/search-all-user-bookmark/internal/search"
 	"github.com/muesli/termenv"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -18,7 +16,7 @@ import (
 )
 
 func main() {
-	p := tea.NewProgram(cli.InitialModel())
+	p := tea.NewProgram(InitialModel())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
@@ -52,28 +50,11 @@ type record struct {
 	norm string
 }
 
-type ConfigLoader struct{}
-
-func (c *ConfigLoader) Find(conf config.Config) ([]string, error) {
-	base := "C:\\Users\\" + conf.CliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
-	return []string{base}, nil
+func NewChromeLoader() infra.ChromeLoader {
+	return infra.ChromeLoader{}
 }
-
-func (c *ConfigLoader) LoadConfig(path string) (config.Config, error) {
-	var cmdConfig config.Config
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return config.Config{}, errors.New("failed to read file")
-	}
-	if err := json.Unmarshal(data, cmdConfig.CliSetting); err != nil {
-		return config.Config{}, errors.New("failed to parse json")
-	}
-	paths, err := c.Find(cmdConfig)
-	if err != nil {
-		return config.Config{}, errors.New("failed to find target path")
-	}
-	cmdConfig.SearchPath = paths
-	return cmdConfig, nil
+func NewChromeFinder() infra.ChromeFinder {
+	return infra.ChromeFinder{}
 }
 
 func InitialModel() model {
@@ -87,17 +68,17 @@ func InitialModel() model {
 	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
 	fmt.Println("Reading all bookmark files...")
 
-	var modelConf ConfigLoader
-	var conf config.Config
-
-	conf, err := modelConf.LoadConfig("./settings.json")
+	chromeLoader := NewChromeLoader()
+	chromeFinder := NewChromeFinder()
+	chromeConf, err := chromeLoader.Load("./settings.json")
 	if err != nil {
+		fmt.Println(err)
 		return model{}
-
 	}
+	fmt.Println("Finish loading settings.json")
+	chromeConf.SearchPath, err = chromeFinder.Find(chromeConf)
 
-	return model{searchString: ti, config: conf}
-
+	return model{searchString: ti, config: chromeConf}
 }
 
 func (m model) Init() tea.Cmd {
@@ -118,16 +99,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter", " ":
-			//TODO: call search logic, with only interface
-			// var searchWord []string
-			// for _, v := range m.searchString.Value() {
-			// 	searchWord = append(searchWord, string(v))
-			// }
-			// var display []search.InfoDisplayed
-			// display = search.FilterByString(m.allUrl, strings.Join(searchWord, ""))
-			// FormatDisplay(display)
-			// m.searchString.Reset()
-			// fmt.Println("")
+			// TODO: call search logic, with only interface
+			var searchWord []string
+			for _, v := range m.searchString.Value() {
+				searchWord = append(searchWord, string(v))
+			}
+			var display []search.InfoDisplayed
+			display, err := search.ReadBookmarkFile(m.config.SearchPath[0])
+			if err != nil {
+			}
+			display = search.FilterByString(display, strings.Join(searchWord, ""))
+			var result result
+			for _, v := range display {
+				titleRecord := record{norm: v.BookmarkTitle.Record.Norm, raw: v.BookmarkTitle.Record.Raw}
+				urlRecord := record{norm: v.BookmarkUrl.Record.Norm, raw: v.BookmarkUrl.Record.Raw}
+				result = append(result, hit{name: v.Name, url: v.Url, bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
+			}
+			result.FormatDisplay()
+			m.searchString.Reset()
+			fmt.Println("")
 		}
 	}
 
