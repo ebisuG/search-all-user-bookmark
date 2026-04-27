@@ -45,6 +45,7 @@ func (c ChromeFinder) Find(conf config.Config) ([]string, error) {
 		panic(err)
 	}
 	var bookmarksFilePath []string
+	bookmarksFilePath = append(bookmarksFilePath, base+"\\"+"Default"+"\\Bookmarks")
 	r, _ := regexp.Compile("^Profile [0-9]*")
 
 	for _, v := range files {
@@ -54,7 +55,7 @@ func (c ChromeFinder) Find(conf config.Config) ([]string, error) {
 		}
 	}
 
-	return []string{base}, nil
+	return bookmarksFilePath, nil
 }
 
 type ChromeParentJson struct {
