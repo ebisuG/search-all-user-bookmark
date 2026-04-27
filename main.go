@@ -29,8 +29,8 @@ type model struct {
 }
 
 type hit struct {
-	name          string
-	url           string
+	// name          string
+	// url           string
 	bookmarkTitle bookmarkTitle
 	bookmarkUrl   bookmarkUrl
 }
@@ -55,6 +55,12 @@ func NewChromeLoader() infra.ChromeLoader {
 }
 func NewChromeFinder() infra.ChromeFinder {
 	return infra.ChromeFinder{}
+}
+func NewChromeParser() infra.ChromeParser {
+	return infra.ChromeParser{}
+}
+func NewSearcher() search.Searcher {
+	return infra.CoreSearcher{}
 }
 
 func InitialModel() model {
@@ -104,16 +110,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			for _, v := range m.searchString.Value() {
 				searchWord = append(searchWord, string(v))
 			}
-			var display []search.InfoDisplayed
-			display, err := search.ReadBookmarkFile(m.config.SearchPath[0])
-			if err != nil {
+			// fmt.Println(m.config.SearchPath)
+			// display, err := search.ReadBookmarkFile(m.config.SearchPath[0])
+			var bookmarks search.Bookmarks
+			chromeParser := NewChromeParser()
+			fmt.Println(m.config.SearchPath)
+			for _, v := range m.config.SearchPath {
+				bookmark, err := chromeParser.Parse(v)
+				if err != nil {
+					fmt.Println(v)
+					fmt.Println("failed to parse chrome bookmark file")
+				}
+				bookmarks = append(bookmarks, bookmark...)
 			}
-			display = search.FilterByString(display, strings.Join(searchWord, ""))
+			// display = search.FilterByString(display, strings.Join(searchWord, ""))
+
+			searcher := NewSearcher()
+			display, err := searcher.Search(bookmarks, strings.Join(searchWord, ""))
+			if err != nil {
+				fmt.Println("failed to search bookmarks")
+			}
 			var result result
 			for _, v := range display {
 				titleRecord := record{norm: v.BookmarkTitle.Record.Norm, raw: v.BookmarkTitle.Record.Raw}
 				urlRecord := record{norm: v.BookmarkUrl.Record.Norm, raw: v.BookmarkUrl.Record.Raw}
-				result = append(result, hit{name: v.Name, url: v.Url, bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
+				result = append(result, hit{bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
+				// result = append(result, hit{name: v.Name, url: v.Url, bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
 			}
 			result.FormatDisplay()
 			m.searchString.Reset()
