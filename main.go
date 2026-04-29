@@ -72,17 +72,19 @@ func InitialModel() model {
 	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
 	fmt.Println("Reading all bookmark files...")
 
+	var config config.Config
 	chromeLoader := NewChromeLoader()
 	chromeFinder := NewChromeFinder()
-	chromeConf, err := chromeLoader.Load("./settings.json")
+	clisetting, err := chromeLoader.Load("./settings.json")
 	if err != nil {
 		fmt.Println(err)
 		return model{}
 	}
+	config.CliSetting = clisetting
 	fmt.Println("Finish loading settings.json")
-	chromeConf.SearchPath, err = chromeFinder.Find(chromeConf)
+	config.SearchPath, err = chromeFinder.Find(config.CliSetting)
 
-	return model{searchString: ti, config: chromeConf}
+	return model{searchString: ti, config: config}
 }
 
 func (m model) Init() tea.Cmd {

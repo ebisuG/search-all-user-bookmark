@@ -19,28 +19,28 @@ type ChromeLoader struct{}
 type ChromeFinder struct{}
 type ChromeParser struct{}
 
-func (c ChromeLoader) Load(path string) (config.Config, error) {
+func (c ChromeLoader) Load(path string) (config.CliSetting, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println(err)
-		return config.Config{}, errors.New("failed to load config")
+		return config.CliSetting{}, errors.New("failed to load config")
 	}
 
-	var conf config.Config
-	if err := json.Unmarshal(data, &conf.CliSetting); err != nil {
+	var cliSetting config.CliSetting
+	if err := json.Unmarshal(data, &cliSetting); err != nil {
 		fmt.Println(err)
-		return config.Config{}, errors.New("failed to parse json")
+		return config.CliSetting{}, errors.New("failed to parse json")
 	}
-	return conf, nil
+	return cliSetting, nil
 }
 
-func (c ChromeFinder) Find(conf config.Config) ([]string, error) {
-	base := "C:\\Users\\" + conf.CliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
+func (c ChromeFinder) Find(cliSetting config.CliSetting) (config.SearchPath, error) {
+	base := "C:\\Users\\" + cliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
 	files, err := os.ReadDir(base)
 	if err != nil {
 		panic(err)
 	}
-	var bookmarksFilePath []string
+	var bookmarksFilePath config.SearchPath
 	bookmarksFilePath = append(bookmarksFilePath, base+"\\"+"Default"+"\\Bookmarks")
 	r, _ := regexp.Compile("^Profile [0-9]*")
 
