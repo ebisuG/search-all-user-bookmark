@@ -29,8 +29,6 @@ type model struct {
 }
 
 type hit struct {
-	// name          string
-	// url           string
 	bookmarkTitle bookmarkTitle
 	bookmarkUrl   bookmarkUrl
 }
@@ -105,13 +103,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter", " ":
-			// TODO: call search logic, with only interface
 			var searchWord []string
 			for _, v := range m.searchString.Value() {
 				searchWord = append(searchWord, string(v))
 			}
-			// fmt.Println(m.config.SearchPath)
-			// display, err := search.ReadBookmarkFile(m.config.SearchPath[0])
 			var bookmarks search.Bookmarks
 			chromeParser := NewChromeParser()
 			fmt.Println(m.config.SearchPath)
@@ -123,7 +118,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				bookmarks = append(bookmarks, bookmark...)
 			}
-			// display = search.FilterByString(display, strings.Join(searchWord, ""))
 
 			searcher := NewSearcher()
 			display, err := searcher.Search(bookmarks, strings.Join(searchWord, ""))
@@ -135,7 +129,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				titleRecord := record{norm: v.BookmarkTitle.Record.Norm, raw: v.BookmarkTitle.Record.Raw}
 				urlRecord := record{norm: v.BookmarkUrl.Record.Norm, raw: v.BookmarkUrl.Record.Raw}
 				result = append(result, hit{bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
-				// result = append(result, hit{name: v.Name, url: v.Url, bookmarkTitle: bookmarkTitle{titleRecord}, bookmarkUrl: bookmarkUrl{urlRecord}})
 			}
 			result.FormatDisplay()
 			m.searchString.Reset()

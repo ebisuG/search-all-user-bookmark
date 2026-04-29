@@ -34,10 +34,6 @@ func (c ChromeLoader) Load(path string) (config.Config, error) {
 	return conf, nil
 }
 
-//Define multiple struct for each browsers,
-//Chrome, Edge, ...
-//Then, define Find to each struct.
-
 func (c ChromeFinder) Find(conf config.Config) ([]string, error) {
 	base := "C:\\Users\\" + conf.CliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
 	files, err := os.ReadDir(base)
