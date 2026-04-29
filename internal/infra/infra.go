@@ -10,7 +10,6 @@ import (
 
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
 	"github.com/ebisuG/search-all-user-bookmark/internal/search"
-	"github.com/mattn/go-runewidth"
 	"golang.org/x/text/cases"
 )
 
@@ -135,33 +134,4 @@ func (c CoreSearcher) Search(bookmarks search.Bookmarks, keyword string) (search
 		}
 	}
 	return result, nil
-}
-
-func firstChars(fixedLength int, s string) string {
-	result := ""
-	currentWidth := 0
-	ellipsis := "..."
-
-	for _, r := range s {
-		w := runewidth.RuneWidth(r)
-		if currentWidth+w >= fixedLength-len(ellipsis) {
-			result += ellipsis
-			currentWidth += len(ellipsis)
-			break
-		}
-		result += string(r)
-		currentWidth += w
-	}
-
-	if currentWidth <= fixedLength {
-		result += runewidth.FillRight("", fixedLength-currentWidth)
-	}
-
-	return result
-}
-
-func CheckError(e error) {
-	if e != nil {
-		panic(e)
-	}
 }
