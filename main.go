@@ -8,6 +8,7 @@ import (
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
 	"github.com/ebisuG/search-all-user-bookmark/internal/infra"
 	"github.com/ebisuG/search-all-user-bookmark/internal/search"
+	"github.com/mattn/go-runewidth"
 	"github.com/muesli/termenv"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -72,17 +73,19 @@ func InitialModel() model {
 	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
 	fmt.Println("Reading all bookmark files...")
 
+	var config config.Config
 	chromeLoader := NewChromeLoader()
 	chromeFinder := NewChromeFinder()
-	chromeConf, err := chromeLoader.Load("./settings.json")
+	clisetting, err := chromeLoader.Load("./settings.json")
 	if err != nil {
 		fmt.Println(err)
 		return model{}
 	}
+	config.CliSetting = clisetting
 	fmt.Println("Finish loading settings.json")
-	chromeConf.SearchPath, err = chromeFinder.Find(chromeConf)
+	config.SearchPath, err = chromeFinder.Find(config.CliSetting)
 
-	return model{searchString: ti, config: chromeConf}
+	return model{searchString: ti, config: config}
 }
 
 func (m model) Init() tea.Cmd {
@@ -109,7 +112,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			var bookmarks search.Bookmarks
 			chromeParser := NewChromeParser()
-			fmt.Println(m.config.SearchPath)
 			for _, v := range m.config.SearchPath {
 				bookmark, err := chromeParser.Parse(v)
 				if err != nil {
@@ -151,9 +153,33 @@ func (m model) View() string {
 
 func (r result) FormatDisplay() {
 	nameColor := lipgloss.Color("#F77F0F")
+	lineLength := 100
 
 	for _, v := range r {
-		hypelink := termenv.Hyperlink(v.bookmarkUrl.record.raw, v.bookmarkTitle.record.raw)
+		hypelink := termenv.Hyperlink(v.bookmarkUrl.record.raw, firstChars(lineLength, v.bookmarkTitle.record.raw))
 		fmt.Println(" ", lipgloss.NewStyle().Foreground(nameColor).Bold(false).Render(hypelink))
 	}
+}
+
+func firstChars(fixedLength int, s string) string {
+	result := ""
+	currentWidth := 0
+	ellipsis := "..."
+
+	for _, r := range s {
+		w := runewidth.RuneWidth(r)
+		if currentWidth+w >= fixedLength-len(ellipsis) {
+			result += ellipsis
+			currentWidth += len(ellipsis)
+			break
+		}
+		result += string(r)
+		currentWidth += w
+	}
+
+	if currentWidth <= fixedLength {
+		result += runewidth.FillRight("", fixedLength-currentWidth)
+	}
+
+	return result
 }

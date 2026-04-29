@@ -1,9 +1,5 @@
 package search
 
-type Searcher interface {
-	Search(bookmarks Bookmarks, keyword string) (Bookmarks, error)
-}
-
 type Bookmarks []Bookmark
 
 type Bookmark struct {
@@ -22,4 +18,12 @@ type BookmarkUrl struct {
 type Record struct {
 	Raw  string
 	Norm string
+}
+
+type Searcher interface {
+	Search(bookmarks Bookmarks, keyword string) (Bookmarks, error)
+}
+
+type Parser interface {
+	Parse(path string) ([]Bookmark, error)
 }

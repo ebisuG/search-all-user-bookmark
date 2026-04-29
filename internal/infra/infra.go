@@ -10,37 +10,35 @@ import (
 
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
 	"github.com/ebisuG/search-all-user-bookmark/internal/search"
-	"github.com/mattn/go-runewidth"
 	"golang.org/x/text/cases"
 )
 
 // This struct is for CLI settings
 type ChromeLoader struct{}
 type ChromeFinder struct{}
-type ChromeParser struct{}
 
-func (c ChromeLoader) Load(path string) (config.Config, error) {
+func (c ChromeLoader) Load(path string) (config.CliSetting, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println(err)
-		return config.Config{}, errors.New("failed to load config")
+		return config.CliSetting{}, errors.New("failed to load config")
 	}
 
-	var conf config.Config
-	if err := json.Unmarshal(data, &conf.CliSetting); err != nil {
+	var cliSetting config.CliSetting
+	if err := json.Unmarshal(data, &cliSetting); err != nil {
 		fmt.Println(err)
-		return config.Config{}, errors.New("failed to parse json")
+		return config.CliSetting{}, errors.New("failed to parse json")
 	}
-	return conf, nil
+	return cliSetting, nil
 }
 
-func (c ChromeFinder) Find(conf config.Config) ([]string, error) {
-	base := "C:\\Users\\" + conf.CliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
+func (c ChromeFinder) Find(cliSetting config.CliSetting) (config.SearchPath, error) {
+	base := "C:\\Users\\" + cliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
 	files, err := os.ReadDir(base)
 	if err != nil {
 		panic(err)
 	}
-	var bookmarksFilePath []string
+	var bookmarksFilePath config.SearchPath
 	bookmarksFilePath = append(bookmarksFilePath, base+"\\"+"Default"+"\\Bookmarks")
 	r, _ := regexp.Compile("^Profile [0-9]*")
 
@@ -86,6 +84,8 @@ type ChromeChild struct {
 type ChromeMetaInfo struct {
 	PowerBookmarkMeta string `json:"power_bookmark_meta"`
 }
+
+type ChromeParser struct{}
 
 func (c ChromeParser) Parse(path string) ([]search.Bookmark, error) {
 	var bookmarks []search.Bookmark
@@ -134,33 +134,4 @@ func (c CoreSearcher) Search(bookmarks search.Bookmarks, keyword string) (search
 		}
 	}
 	return result, nil
-}
-
-func firstChars(fixedLength int, s string) string {
-	result := ""
-	currentWidth := 0
-	ellipsis := "..."
-
-	for _, r := range s {
-		w := runewidth.RuneWidth(r)
-		if currentWidth+w >= fixedLength-len(ellipsis) {
-			result += ellipsis
-			currentWidth += len(ellipsis)
-			break
-		}
-		result += string(r)
-		currentWidth += w
-	}
-
-	if currentWidth <= fixedLength {
-		result += runewidth.FillRight("", fixedLength-currentWidth)
-	}
-
-	return result
-}
-
-func CheckError(e error) {
-	if e != nil {
-		panic(e)
-	}
 }
