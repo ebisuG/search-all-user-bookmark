@@ -4,6 +4,10 @@ type Searcher interface {
 	Search(bookmarks Bookmarks, keyword string) (Bookmarks, error)
 }
 
+type Parser interface {
+	Parse(path string) ([]Bookmark, error)
+}
+
 type Bookmarks []Bookmark
 
 type Bookmark struct {

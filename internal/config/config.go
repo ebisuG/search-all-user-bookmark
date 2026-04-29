@@ -1,7 +1,5 @@
 package config
 
-import "github.com/ebisuG/search-all-user-bookmark/internal/search"
-
 type Config struct {
 	SearchPath SearchPath
 	CliSetting CliSetting
@@ -19,8 +17,4 @@ type Loader interface {
 
 type Finder interface {
 	Find(cli CliSetting) (SearchPath, error)
-}
-
-type Parser interface {
-	Parse(path string) ([]search.Bookmark, error)
 }
