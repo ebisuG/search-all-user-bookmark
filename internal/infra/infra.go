@@ -17,7 +17,6 @@ import (
 // This struct is for CLI settings
 type ChromeLoader struct{}
 type ChromeFinder struct{}
-type ChromeParser struct{}
 
 func (c ChromeLoader) Load(path string) (config.CliSetting, error) {
 	data, err := os.ReadFile(path)
@@ -86,6 +85,8 @@ type ChromeChild struct {
 type ChromeMetaInfo struct {
 	PowerBookmarkMeta string `json:"power_bookmark_meta"`
 }
+
+type ChromeParser struct{}
 
 func (c ChromeParser) Parse(path string) ([]search.Bookmark, error) {
 	var bookmarks []search.Bookmark
