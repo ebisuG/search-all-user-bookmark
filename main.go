@@ -111,7 +111,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			var bookmarks search.Bookmarks
 			chromeParser := NewChromeParser()
-			fmt.Println(m.config.SearchPath)
 			for _, v := range m.config.SearchPath {
 				bookmark, err := chromeParser.Parse(v)
 				if err != nil {
