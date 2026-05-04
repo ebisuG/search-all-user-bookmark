@@ -20,14 +20,13 @@ type ChromeFinder struct{}
 func (c ChromeLoader) Load(path string) (config.CliSetting, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Println(err)
-		return config.CliSetting{}, errors.New("failed to load config")
+		//TODO : if debug mode on, display detailed data
+		return config.CliSetting{}, fmt.Errorf("%w", config.NotFoundError{FilePath: path})
 	}
 
 	var cliSetting config.CliSetting
 	if err := json.Unmarshal(data, &cliSetting); err != nil {
-		fmt.Println(err)
-		return config.CliSetting{}, errors.New("failed to parse json")
+		return config.CliSetting{}, fmt.Errorf("%w", config.InvalidFormatError{})
 	}
 	return cliSetting, nil
 }
@@ -36,7 +35,7 @@ func (c ChromeFinder) Find(cliSetting config.CliSetting) (config.SearchPath, err
 	base := "C:\\Users\\" + cliSetting.UserName + "\\AppData\\Local\\Google\\Chrome\\User Data"
 	files, err := os.ReadDir(base)
 	if err != nil {
-		panic(err)
+		return config.SearchPath{}, errors.New("no such directory : " + base)
 	}
 	var bookmarksFilePath config.SearchPath
 	bookmarksFilePath = append(bookmarksFilePath, base+"\\"+"Default"+"\\Bookmarks")
@@ -48,7 +47,9 @@ func (c ChromeFinder) Find(cliSetting config.CliSetting) (config.SearchPath, err
 			bookmarksFilePath = append(bookmarksFilePath, base+"\\"+v.Name()+"\\Bookmarks")
 		}
 	}
-
+	if len(bookmarksFilePath) == 0 {
+		return config.SearchPath{}, fmt.Errorf("%w", config.NotFoundBookmarkFileError{Path: base})
+	}
 	return bookmarksFilePath, nil
 }
 
