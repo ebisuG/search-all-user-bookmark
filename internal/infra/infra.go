@@ -95,7 +95,9 @@ func (c ChromeParser) Parse(path string) ([]search.Bookmark, error) {
 		return bookmarks, errors.New("no file")
 	}
 	var chromeJson ChromeParentJson
-	json.Unmarshal(data, &chromeJson)
+	if err := json.Unmarshal(data, &chromeJson); err != nil {
+		return bookmarks, errors.New("Invalid format")
+	}
 	for i := 0; i < len(chromeJson.Roots.BookmarkBar.Children); i++ {
 		bookmark := chromeJson.Roots.BookmarkBar.Children[i]
 		bookmarks = append(bookmarks, GetChildren(bookmark)...)
