@@ -1,5 +1,7 @@
 package config
 
+import "errors"
+
 type Config struct {
 	SearchPath SearchPath
 	CliSetting CliSetting
@@ -17,4 +19,20 @@ type Loader interface {
 
 type Finder interface {
 	Find(cli CliSetting) (SearchPath, error)
+}
+
+type NotFoundError struct {
+	FilePath string
+}
+
+func (e *NotFoundError) Error() string { return "No such file : " + e.FilePath }
+
+var ErrInvalidFormat = errors.New("invalid format")
+
+type NotFoundBookmarkFileError struct {
+	Path string
+}
+
+func (e *NotFoundBookmarkFileError) Error() string {
+	return "not found : " + e.Path
 }

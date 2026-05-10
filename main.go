@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -73,19 +74,36 @@ func InitialModel() model {
 	fmt.Println(lipgloss.NewStyle().Foreground(lipgloss.Color("#a871f0")).Bold(true).SetString("Press Ctrl to jummp to bookmark"))
 	fmt.Println("Reading all bookmark files...")
 
-	var config config.Config
+	var conf config.Config
 	chromeLoader := NewChromeLoader()
-	chromeFinder := NewChromeFinder()
 	clisetting, err := chromeLoader.Load("./settings.json")
 	if err != nil {
-		fmt.Println(err)
-		return model{}
+		var nf *config.NotFoundError
+		if errors.As(err, &nf) {
+			fmt.Println("no setting.json file")
+		} else if errors.Is(err, config.ErrInvalidFormat) {
+			fmt.Println("invalid format")
+		} else {
+			fmt.Println(err)
+		}
+		panic("failed to initialization")
 	}
-	config.CliSetting = clisetting
-	fmt.Println("Finish loading settings.json")
-	config.SearchPath, err = chromeFinder.Find(config.CliSetting)
 
-	return model{searchString: ti, config: config}
+	conf.CliSetting = clisetting
+	fmt.Println("Finish loading settings.json")
+
+	chromeFinder := NewChromeFinder()
+	conf.SearchPath, err = chromeFinder.Find(conf.CliSetting)
+	if err != nil {
+		var nfb *config.NotFoundBookmarkFileError
+		if errors.As(err, &nfb) {
+			fmt.Println("no bookmark files")
+		} else {
+			fmt.Println(err)
+		}
+		panic("failed to initialization")
+	}
+	return model{searchString: ti, config: conf}
 }
 
 func (m model) Init() tea.Cmd {
