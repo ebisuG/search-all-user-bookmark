@@ -26,7 +26,7 @@ func (c ChromeLoader) Load(path string) (config.CliSetting, error) {
 
 	var cliSetting config.CliSetting
 	if err := json.Unmarshal(data, &cliSetting); err != nil {
-		return config.CliSetting{}, fmt.Errorf("%w", config.InvalidFormatError{})
+		return config.CliSetting{}, fmt.Errorf("%w", config.ErrInvalidFormat)
 	}
 	return cliSetting, nil
 }

@@ -79,10 +79,9 @@ func InitialModel() model {
 	clisetting, err := chromeLoader.Load("./settings.json")
 	if err != nil {
 		var nf *config.NotFoundError
-		var ife *config.InvalidFormatError
 		if errors.As(err, &nf) {
 			fmt.Println("no setting.json file")
-		} else if errors.As(err, &ife) {
+		} else if errors.Is(err, config.ErrInvalidFormat) {
 			fmt.Println("invalid format")
 		} else {
 			fmt.Println(err)

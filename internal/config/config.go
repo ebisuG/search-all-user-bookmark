@@ -1,5 +1,7 @@
 package config
 
+import "errors"
+
 type Config struct {
 	SearchPath SearchPath
 	CliSetting CliSetting
@@ -25,9 +27,7 @@ type NotFoundError struct {
 
 func (e *NotFoundError) Error() string { return "No such file : " + e.FilePath }
 
-type InvalidFormatError struct{}
-
-func (e *InvalidFormatError) Error() string { return "Invalid format" }
+var ErrInvalidFormat = errors.New("invalid format")
 
 type NotFoundBookmarkFileError struct {
 	Path string
