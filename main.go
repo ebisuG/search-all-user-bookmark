@@ -78,7 +78,7 @@ func InitialModel() model {
 	var conf config.Config
 	chromeLoader := NewChromeLoader()
 	clisetting, err := chromeLoader.Load("./settings.json")
-	logger := infra.NewLogger(conf.CliSetting.LogLevel)
+	logger := infra.NewLogger(clisetting.LogLevel)
 	logger.Debug("clisetting is:")
 	logger.Debug(clisetting)
 
