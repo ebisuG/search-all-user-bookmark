@@ -12,8 +12,8 @@ type loggerImpl struct {
 
 var _ logger.Logger = (*loggerImpl)(nil)
 
-func (l *loggerImpl) Error(msg any) {
-	if logger.LevelError <= l.level {
+func (l *loggerImpl) Production(msg any) {
+	if logger.LevelProduction <= l.level {
 		log.Println("[ERROR]", msg)
 	}
 }
@@ -28,8 +28,8 @@ func Parse(level string) logger.LogLevel {
 	switch level {
 	case "debug":
 		return logger.LevelDebug
-	case "error":
-		return logger.LevelError
+	case "production":
+		return logger.LevelProduction
 	default:
 		return logger.LevelDebug
 	}

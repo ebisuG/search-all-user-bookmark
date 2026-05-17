@@ -4,10 +4,10 @@ type LogLevel int
 
 const (
 	LevelDebug LogLevel = iota
-	LevelError
+	LevelProduction
 )
 
 type Logger interface {
-	Error(msg any)
+	Production(msg any)
 	Debug(msg any)
 }
