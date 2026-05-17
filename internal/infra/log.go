@@ -10,13 +10,13 @@ type Logger struct {
 	level logger.LogLevel
 }
 
-func (l *Logger) Error(msg string) {
-	if logger.LevelError <= logger.LevelDebug {
+func (l *Logger) Error(msg any) {
+	if logger.LevelError <= l.level {
 		log.Println("[ERROR]", msg)
 	}
 }
 
-func (l *Logger) Debug(msg string) {
+func (l *Logger) Debug(msg any) {
 	if l.level <= logger.LevelDebug {
 		log.Println("[DEBUG]", msg)
 	}
@@ -31,4 +31,8 @@ func Parse(level string) logger.LogLevel {
 	default:
 		return logger.LevelDebug
 	}
+}
+
+func NewLogger(level string) Logger {
+	return Logger{level: Parse(level)}
 }
