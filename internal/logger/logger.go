@@ -8,6 +8,6 @@ const (
 )
 
 type Logger interface {
-	Error(msg string)
-	Debug(msg string)
+	Error(msg any)
+	Debug(msg any)
 }
