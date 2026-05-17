@@ -8,6 +8,7 @@ import (
 
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
 	"github.com/ebisuG/search-all-user-bookmark/internal/infra"
+	"github.com/ebisuG/search-all-user-bookmark/internal/logger"
 	"github.com/ebisuG/search-all-user-bookmark/internal/search"
 	"github.com/mattn/go-runewidth"
 	"github.com/muesli/termenv"
@@ -28,6 +29,7 @@ func main() {
 type model struct {
 	searchString textinput.Model
 	config       config.Config
+	logger       logger.Logger
 }
 
 type hit struct {
@@ -77,6 +79,10 @@ func InitialModel() model {
 	var conf config.Config
 	chromeLoader := NewChromeLoader()
 	clisetting, err := chromeLoader.Load("./settings.json")
+	logger := infra.NewLogger(clisetting.LogLevel)
+	logger.Debug("clisetting is:")
+	logger.Debug(clisetting)
+
 	if err != nil {
 		var nf *config.NotFoundError
 		if errors.As(err, &nf) {
@@ -94,6 +100,8 @@ func InitialModel() model {
 
 	chromeFinder := NewChromeFinder()
 	conf.SearchPath, err = chromeFinder.Find(conf.CliSetting)
+	logger.Debug("conf.SearchPath is:")
+	logger.Debug(conf.SearchPath)
 	if err != nil {
 		var nfb *config.NotFoundBookmarkFileError
 		if errors.As(err, &nfb) {
@@ -103,7 +111,7 @@ func InitialModel() model {
 		}
 		panic("failed to initialization")
 	}
-	return model{searchString: ti, config: conf}
+	return model{searchString: ti, config: conf, logger: logger}
 }
 
 func (m model) Init() tea.Cmd {
