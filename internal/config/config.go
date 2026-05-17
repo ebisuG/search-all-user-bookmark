@@ -11,6 +11,7 @@ type SearchPath []string
 
 type CliSetting struct {
 	UserName string `json:"username"`
+	LogLevel string `json:"loglevel"`
 }
 
 type Loader interface {
