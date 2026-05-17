@@ -8,6 +8,7 @@ import (
 
 	"github.com/ebisuG/search-all-user-bookmark/internal/config"
 	"github.com/ebisuG/search-all-user-bookmark/internal/infra"
+	"github.com/ebisuG/search-all-user-bookmark/internal/logger"
 	"github.com/ebisuG/search-all-user-bookmark/internal/search"
 	"github.com/mattn/go-runewidth"
 	"github.com/muesli/termenv"
@@ -28,7 +29,7 @@ func main() {
 type model struct {
 	searchString textinput.Model
 	config       config.Config
-	logger       infra.Logger
+	logger       logger.Logger
 }
 
 type hit struct {
