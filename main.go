@@ -52,12 +52,13 @@ type record struct {
 	norm string
 }
 
-func NewChromeLoader() infra.ChromeLoader {
-	return infra.ChromeLoader{}
-}
-func NewChromeFinder() infra.ChromeFinder {
-	return infra.ChromeFinder{}
-}
+//	func NewChromeLoader() infra.ChromeLoader {
+//		return infra.ChromeLoader{}
+//	}
+//
+//	func NewChromeFinder() infra.ChromeFinder {
+//		return infra.ChromeFinder{}
+//	}
 func NewChromeParser() infra.ChromeParser {
 	return infra.ChromeParser{}
 }
@@ -77,7 +78,7 @@ func InitialModel() model {
 	fmt.Println("Reading all bookmark files...")
 
 	var conf config.Config
-	chromeLoader := NewChromeLoader()
+	chromeLoader := infra.NewChromeLoader()
 	clisetting, err := chromeLoader.Load("./settings.json")
 	logger := infra.NewLogger(clisetting.LogLevel)
 	logger.Debug("clisetting is:")
@@ -98,7 +99,7 @@ func InitialModel() model {
 	conf.CliSetting = clisetting
 	fmt.Println("Finish loading settings.json")
 
-	chromeFinder := NewChromeFinder()
+	chromeFinder := infra.NewChromeFinder()
 	conf.SearchPath, err = chromeFinder.Find(conf.CliSetting)
 	logger.Debug("conf.SearchPath is:")
 	logger.Debug(conf.SearchPath)
