@@ -45,6 +45,8 @@ type ChromeMetaInfo struct {
 
 type ChromeParser struct{}
 
+var _ search.Parser = (*ChromeParser)(nil)
+
 func (c ChromeParser) Parse(path string) ([]search.Bookmark, error) {
 	var bookmarks []search.Bookmark
 	data, err := os.ReadFile(path)
@@ -80,7 +82,13 @@ func GetChildren(c ChromeChild) []search.Bookmark {
 	return result
 }
 
+func NewChromeParser() search.Parser {
+	return &ChromeParser{}
+}
+
 type CoreSearcher struct{}
+
+var _ search.Searcher = (*CoreSearcher)(nil)
 
 func (c CoreSearcher) Search(bookmarks search.Bookmarks, keyword string) (search.Bookmarks, error) {
 	var result search.Bookmarks
@@ -94,4 +102,8 @@ func (c CoreSearcher) Search(bookmarks search.Bookmarks, keyword string) (search
 		}
 	}
 	return result, nil
+}
+
+func NewCoreSearcher() search.Searcher {
+	return &CoreSearcher{}
 }
