@@ -52,20 +52,6 @@ type record struct {
 	norm string
 }
 
-//	func NewChromeLoader() infra.ChromeLoader {
-//		return infra.ChromeLoader{}
-//	}
-//
-//	func NewChromeFinder() infra.ChromeFinder {
-//		return infra.ChromeFinder{}
-//	}
-func NewChromeParser() infra.ChromeParser {
-	return infra.ChromeParser{}
-}
-func NewSearcher() search.Searcher {
-	return infra.CoreSearcher{}
-}
-
 func InitialModel() model {
 	ti := textinput.New()
 	ti.Placeholder = "Search keyword"
@@ -138,7 +124,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				searchWord = append(searchWord, string(v))
 			}
 			var bookmarks search.Bookmarks
-			chromeParser := NewChromeParser()
+			chromeParser := infra.NewChromeParser()
 			for _, v := range m.config.SearchPath {
 				bookmark, err := chromeParser.Parse(v)
 				if err != nil {
@@ -148,7 +134,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				bookmarks = append(bookmarks, bookmark...)
 			}
 
-			searcher := NewSearcher()
+			searcher := infra.NewCoreSearcher()
 			display, err := searcher.Search(bookmarks, strings.Join(searchWord, ""))
 			if err != nil {
 				fmt.Println("failed to search bookmarks")
