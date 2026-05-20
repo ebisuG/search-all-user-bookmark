@@ -10,7 +10,7 @@ type Config struct {
 type SearchPath []string
 
 type CliSetting struct {
-	UserName string `json:"username"`
+	UserName string `json:"USERNAME"`
 	LogLevel string `json:"LOG_LEVEL"`
 }
 
