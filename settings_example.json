@@ -1,3 +1,4 @@
 {
-    "username":"example"
+    "USERNAME":"example",
+    "DEBUG_MODE":"production"
 }
