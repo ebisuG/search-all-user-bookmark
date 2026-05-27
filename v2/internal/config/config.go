@@ -32,7 +32,7 @@ func (c *Config) LoadCliSettings(path string) {
 		return
 	}
 
-	if err := json.Unmarshal(data, &c); err != nil {
+	if err := json.Unmarshal(data, &c.CliSetting); err != nil {
 		return
 	}
 }
