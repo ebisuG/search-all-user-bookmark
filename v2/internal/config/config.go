@@ -22,10 +22,6 @@ type Environments struct {
 	BookmarkFilePaths []string
 }
 
-func NewConfig(cli CliSetting, env Environments) *Config {
-	return &Config{CliSetting: cli, Environments: env}
-}
-
 func (c *Config) LoadCliSettings(path string) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -66,11 +62,3 @@ func (c *Config) Load() Config {
 type Loader interface {
 	Load() Config
 }
-
-//Next TODO:
-//main.go
-// loader := NewLoader()
-//cfg := loader.Load()
-//domain.go
-// domainLogic(cfg config.Config)
-//move Loader interface to domain for "dependency inversion".
