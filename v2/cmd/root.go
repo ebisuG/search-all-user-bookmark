@@ -1,4 +1,4 @@
-package root
+package cmd
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "sab",
-	Short: "sab means search all user's bookmark",
+func init() {
+	rootCmd.AddCommand(searchCmd)
+}
 
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hello world")
-	},
+var rootCmd = &cobra.Command{
+	Use:   "search-bookmark",
+	Short: "search-bookmark searchs all user's bookmark among all browsers",
 }
 
 func Execute() {
